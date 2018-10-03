@@ -8,9 +8,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class BlogController extends AbstractController
 {
     /**
-     * @Route("/blog", name="blog")
+     * @Route("/", name="homepage")
      */
-    public function index()
+    public function indexAction()
     {
         return $this->render('blog/index.html.twig', [
             'controller_name' => 'BlogController',
