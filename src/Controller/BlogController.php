@@ -12,8 +12,11 @@ class BlogController extends AbstractController
      */
     public function indexAction()
     {
-        return $this->render('blog/index.html.twig', [
-            'controller_name' => 'BlogController',
-        ]);
+        return $this->render(
+            'blog/index.html.twig',
+            [
+                'controller_name' => 'BlogController',
+            ]
+        );
     }
 }
