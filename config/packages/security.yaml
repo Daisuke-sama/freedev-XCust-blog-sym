@@ -1,13 +1,28 @@
 security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        in_memory: { memory: ~ }
+        hwi:
+            id: hwi_oauth.user.provider
+
     firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
+        secured_area:
+            anonymous: ~
+            oauth:
+                resource_owners:
+                    auth0: "auth0/callback"
+                login_path: /login
+                use_forward: false
+                failure_path: /login
+
+                oauth_user_provider:
+                    service: hwi_oauth.user.provider
+
+            logout:
+                path: /auth0/logout
+                target: /
+
         main:
-            anonymous: true
+            anonymous: ~
 
             # activate different ways to authenticate
 
@@ -20,5 +35,5 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/secured, roles: ROLE_OAUTH_USER }

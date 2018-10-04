@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="blog_post")
  * @ORM\Entity(repositoryClass="App\Repository\BlogPostRepository")
- * @ORM\HasLifecycleCallbacks()
+ * @ORM\HasLifecycleCallbacks
  */
 class BlogPost
 {
@@ -194,9 +194,9 @@ class BlogPost
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->createdAt;
     }
@@ -214,9 +214,9 @@ class BlogPost
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getUpdatedAt(): \DateTime
+    public function getUpdatedAt(): ?\DateTime
     {
         return $this->updatedAt;
     }
