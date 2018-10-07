@@ -54,7 +54,7 @@ class Auth0ResourceOwner extends GenericOAuth2ResourceOwner
             ]
         );
 
-        $resolver->setRequired(['{base_url}']);
+        $resolver->setRequired(['base_url']);
 
         $resorter = function (Options $options, $value) {
             return str_replace('{base_url}', $options['base_url'], $value);

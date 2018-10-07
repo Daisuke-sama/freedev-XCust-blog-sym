@@ -11,7 +11,7 @@ hwi_oauth_login:
     prefix: /login
 
 auth0_login:
-    path: /autho0/callback
+    path: /auth0/callback
 
 auth0_logout:
     path: /auth0/logout
