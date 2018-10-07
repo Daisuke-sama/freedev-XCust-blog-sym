@@ -3,14 +3,15 @@
 namespace App\Controller;
 
 use Doctrine\Common\Persistence\ObjectRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Creator;
 use App\Form\CreatorFormType;
+use Symfony\Component\Routing\Annotation\Route;
 
 
 /**
@@ -28,7 +29,7 @@ class AdminController extends AbstractController
     /**
      * @var ObjectRepository
      */
-    private $objectRepository;
+    private $creatorRepository;
 
     /**
      * @var ObjectRepository
@@ -44,7 +45,7 @@ class AdminController extends AbstractController
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager      = $entityManager;
-        $this->objectRepository   = $entityManager->getRepository('App:Creator');
+        $this->creatorRepository  = $entityManager->getRepository('App:Creator');
         $this->blogPostRepository = $entityManager->getRepository('App:BlogPost');
     }
 
@@ -57,8 +58,8 @@ class AdminController extends AbstractController
      */
     public function addCreatorAction(Request $request)
     {
-        if ($this->objectRepository->findOneBy(['username' => $this->getUser()->getUserName()])) {
-            $this->addFlash('error', 'Unable to add creator because he (or she) already exists.');
+        if ($this->creatorRepository->findOneBy(['username' => $this->getUser()->getUsername()])) {
+            $this->addFlash('error', 'Невозможно добавить ещё одного админа. Ты уже есть.');
 
             return $this->redirectToRoute('homepage');
         }
@@ -71,11 +72,10 @@ class AdminController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->persist($creator);
-            $this->entityManager->flush();
-
-            $this->addFlash('success', 'Thank you for being registered with this website.');
+            $this->entityManager->flush($creator);
 
             $request->getSession()->set('user_is_creator', true);
+            $this->addFlash('success', 'Молодец - ты зарегистрирован.');
 
             return $this->redirectToRoute('homepage');
         }

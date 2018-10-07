@@ -3,15 +3,15 @@
 #    controller: App\Controller\DefaultController::index
 
 hwi_oauth_redirect:
-  resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
-  prefix: /connect
+    resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
+    prefix: /connect
 
 hwi_oauth_login:
-  resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
-  prefix: /login
+    resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
+    prefix: /login
 
 auth0_login:
-  path: /autho0/callback
+    path: /autho0/callback
 
 auth0_logout:
-  path: /auth0/logout
+    path: /auth0/logout

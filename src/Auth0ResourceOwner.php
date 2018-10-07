@@ -31,7 +31,7 @@ class Auth0ResourceOwner extends GenericOAuth2ResourceOwner
     /**
      * {@inheritdoc}
      */
-    public function getAuthorizationUrl($redirectUri, array $extraParameters = array())
+    public function getAuthorizationUrl($redirectUri, array $extraParameters = [])
     {
         $params = array_merge($extraParameters, ['audience' => $this->options['audience']]);
 

@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class CheckIsCreatorListener for redirect after a creator instantiation.
@@ -65,7 +65,12 @@ class CheckIsCreatorListener
         $this->_entityManager = $entityManager;
     }
 
-    public function onKernelController(FilterControllerEvent $event)
+    /**
+     * On kernel.controller
+     *
+     * @param FilterControllerEvent $event
+     */
+    public function onKernelController(FilterControllerEvent $event): void
     {
         // If the path does not begin with /admin, then don't add to flasher
         if ( ! preg_match('/^\/admin/i', $event->getRequest()->getPathInfo())) {
@@ -91,7 +96,7 @@ class CheckIsCreatorListener
         // Does the authenticated user is a creator
         $creator = $this->_entityManager
             ->getRepository('App:Creator')
-            ->findOneBy(['username'], $user->getUsername());
+            ->findOneByUsername($user->getUsername());
         if ($creator) {
             $this->session->set('user_is_creator', true);
         }
