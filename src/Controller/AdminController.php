@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\BlogPost;
+use App\Form\EntryFormType;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -18,6 +20,8 @@ use Symfony\Component\Routing\Annotation\Route;
  * Class AdminController
  *
  * @package App\Controller
+ *
+ * @Route("/admin")
  */
 class AdminController extends AbstractController
 {
@@ -50,11 +54,11 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/creator/add", name="creator_add")
+     * @Route("/admin/creator", name="creator_add")
      *
      * @param Request $request
      *
-     * @return RedirectResponse|Response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function addCreatorAction(Request $request)
     {
@@ -82,6 +86,40 @@ class AdminController extends AbstractController
 
         return $this->render(
             'admin/add_creator_form.html.twig',
+            [
+                'form' => $form->createView(),
+            ]
+        );
+    }
+
+    /**
+     * @Route("/make-entry", name="admin_make_entry")
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function makeEntryAction(Request $request)
+    {
+        $blogPost = new BlogPost();
+
+        $creator = new $this->creatorRepository->findOneByUsername($this->getUser()->getUsername());
+        $blogPost->setCreator($creator);
+
+        $form = $this->createForm(EntryFormType::class, $blogPost);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->persist($blogPost);
+            $this->entityManager->flush($blogPost);
+
+            $this->addFlash('success', 'Запись сохранена.');
+
+            return $this->redirectToRoute('creator_add');
+        }
+
+        return $this->render(
+            'admin/entry_form.html.twig',
             [
                 'form' => $form->createView(),
             ]
