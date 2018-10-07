@@ -28,17 +28,17 @@ class AdminController extends AbstractController
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    private $_entityManager;
 
     /**
      * @var ObjectRepository
      */
-    private $creatorRepository;
+    private $_creatorRepository;
 
     /**
      * @var ObjectRepository
      */
-    private $blogPostRepository;
+    private $_blogPostRepository;
 
 
     /**
@@ -48,9 +48,9 @@ class AdminController extends AbstractController
      */
     public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->entityManager      = $entityManager;
-        $this->creatorRepository  = $entityManager->getRepository('App:Creator');
-        $this->blogPostRepository = $entityManager->getRepository('App:BlogPost');
+        $this->_entityManager      = $entityManager;
+        $this->_creatorRepository  = $entityManager->getRepository('App:Creator');
+        $this->_blogPostRepository = $entityManager->getRepository('App:BlogPost');
     }
 
     /**
@@ -62,7 +62,7 @@ class AdminController extends AbstractController
      */
     public function addCreatorAction(Request $request)
     {
-        if ($this->creatorRepository->findOneBy(['username' => $this->getUser()->getUsername()])) {
+        if ($this->_creatorRepository->findOneBy(['username' => $this->getUser()->getUsername()])) {
             $this->addFlash('error', 'Невозможно добавить ещё одного админа. Ты уже есть.');
 
             return $this->redirectToRoute('homepage');
@@ -75,8 +75,8 @@ class AdminController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($creator);
-            $this->entityManager->flush($creator);
+            $this->_entityManager->persist($creator);
+            $this->_entityManager->flush($creator);
 
             $request->getSession()->set('user_is_creator', true);
             $this->addFlash('success', 'Молодец - ты зарегистрирован.');
@@ -110,8 +110,8 @@ class AdminController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($blogPost);
-            $this->entityManager->flush($blogPost);
+            $this->_entityManager->persist($blogPost);
+            $this->_entityManager->flush($blogPost);
 
             $this->addFlash('success', 'Запись сохранена.');
 
@@ -124,5 +124,55 @@ class AdminController extends AbstractController
                 'form' => $form->createView(),
             ]
         );
+    }
+
+    /**
+     * @Route("/", name="admin_index")
+     * @Route("/entries", name="admin_entries")
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function entriesAction()
+    {
+        $creator = $this->_creatorRepository->findOneByUsername($this->getUser()->getUsername());
+
+        $blogPosts = [];
+
+        if ($creator) {
+            $blogPosts = $this->_blogPostRepository->findByCreator($creator);
+        }
+
+        return $this->render(
+            'admin/entries.html.twig',
+            [
+                'blogPosts' => $blogPosts,
+            ]
+        );
+    }
+
+    /**
+     * @Route("/remove-entry/{entryId}", name="admin_remove_entry")
+     *
+     * @param $entryId
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function removeEntryAction($entryId)
+    {
+        $blogPost = $this->_blogPostRepository->findOneById($entryId);
+        $creator  = $this->_creatorRepository->findOneByUsername($this->getUser()->getUsername());
+
+        if ( ! $blogPost || $creator !== $blogPost->getCreator()) {
+            $this->addFlash('error', "Запись не удаляется.");
+
+            return $this->redirectToRoute("admin_entries");
+        }
+
+        $this->_entityManager->remove($blogPost);
+        $this->_entityManager->flush();
+
+        $this->addFlash('success', "Запись удалена.");
+
+        return $this->redirectToRoute('admin_entries');
     }
 }
