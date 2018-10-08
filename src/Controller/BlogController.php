@@ -5,10 +5,16 @@ namespace App\Controller;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class BlogController extends AbstractController
 {
+    /**
+     * The limit for posts when fetching.
+     */
+    const LIMIT = 10;
+
     /**
      * @var EntityManagerInterface
      */
@@ -40,10 +46,16 @@ class BlogController extends AbstractController
      * @Route("/", name="homepage")
      * @Route("/entries", name="entries")
      */
-    public function entriesAction()
+    public function entriesAction(Request $request)
     {
+        $page = 1;
+
+        if ($request->get('page')) {
+            $page = $request->get('page');
+        }
+
         return $this->render('blog/entries.html.twig', [
-            'blogPost' => $this->_blogPostRepository->findAll()
+            'blogPosts' => $this->_blogPostRepository->findAll()
         ]);
     }
 }
