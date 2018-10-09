@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-docker run \
+docker run --name mysqlxcust \
     -p 3307:3306 \
     -e MYSQL_ROOT_PASSWORD=root \
     -e MYSQL_DATABASE=blogdb \

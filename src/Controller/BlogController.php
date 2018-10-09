@@ -45,6 +45,10 @@ class BlogController extends AbstractController
     /**
      * @Route("/", name="homepage")
      * @Route("/entries", name="entries")
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function entriesAction(Request $request)
     {
@@ -55,7 +59,10 @@ class BlogController extends AbstractController
         }
 
         return $this->render('blog/entries.html.twig', [
-            'blogPosts' => $this->_blogPostRepository->findAll()
+            'blogPosts' => $this->_blogPostRepository->getAllPosts($page, self::LIMIT),
+            'totalBlogPosts' => $this->_blogPostRepository->getPostCount(),
+            'page' => $page,
+            'limit' => self::LIMIT,
         ]);
     }
 }

@@ -6,4 +6,58 @@
 
 {% block body %}
 
+    <div class="container">
+        <div class="blog-header">
+            <h1 class="blog-title">Блог</h1>
+            <p class="lead blog-description">Просто куча текстов.</p>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-8 blog-main">
+                {% for blogPost in blogPosts %}
+                    {% set paragraphs = blogPost.description|split('</p>') %}
+                    {% set firstParagraph = paragraphs|first ~ '</p>' %}
+                    <div class="blog-post">
+                        <h2 class="blog-post-title">
+                            {{ blogPost.title }}
+                        </h2>
+                        <p class="blog-post-meta">
+                            {{ blogPost.getUpdatedAt|date('F j, Y') }} by
+
+                            {% if blogPost.creator %}
+                                {{ blogPost.creator.name }}
+                            {% else %}
+                                Unknown Author
+                            {% endif %}
+                        </p>
+                        {{ firstParagraph|raw }}<br/>
+                    </div>
+                {% else %}
+                    <div class="alert alert-danger" role="alert">
+                        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                        <span class="sr-only">Ошибка:</span>
+                        Записей нету, текстов нету. Нужно создать.
+                    </div>
+                {% endfor %}
+
+                {% set previous = page > 1 %}
+                {% set next = (page * limit) < totalBlogPosts %}
+                <nav>
+                    <ul class="pager">
+                        <li class="previous {% if previous == false %}disabled{% endif %}">
+                            <a href="{% if previous %}{{ path('entries', {'page': page - 1}) }}{% endif %}">
+                                <span aria-hidden="true">&larr;</span> Older
+                            </a>
+                        </li>
+                        <li class="next {% if next == false %}disabled{% endif %}">
+                            <a href="{% if next %}{{ path('entries', {'page': page + 1}) }}{% endif %}">
+                                Newer <span aria-hidden="true">&rarr;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
