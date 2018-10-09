@@ -1,0 +1,15 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div id="navbar" class="collapse navbar-collapse pull-right">
+        <ul class="nav navbar-nav">'
+            {% if app.request.get('_route') not in ['homepage', 'entries'] %}
+                <li><a href="{{ path("homepage") }}">Home</a></li>
+            {% endif %}
+            {% if app.user %}
+                <li><a href="{{ path('admin_index') }}">Админка</a></li>
+                <li><a href="{{ path('logout') }}">Вылогиниться</a></li>
+            {% else %}
+                <li><a href="/connect/auth0">Войти</a> </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
