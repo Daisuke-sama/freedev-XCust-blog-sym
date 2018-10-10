@@ -5,7 +5,9 @@ namespace App\Controller;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class BlogController extends AbstractController
@@ -49,6 +51,7 @@ class BlogController extends AbstractController
      * @param Request $request
      *
      * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function entriesAction(Request $request)
     {
@@ -63,6 +66,28 @@ class BlogController extends AbstractController
             'totalBlogPosts' => $this->_blogPostRepository->getPostCount(),
             'page' => $page,
             'limit' => self::LIMIT,
+        ]);
+    }
+
+    /**
+     * @Route("/entry/{slug}", name="entry")
+     *
+     * @param $slug
+     *
+     * @return RedirectResponse|Response
+     */
+    public function entryAction($slug)
+    {
+        $blogPost = $this->_blogPostRepository->findOneBySlug($slug);
+
+        if(!$blogPost) {
+            $this->addFlash('error', 'Невозможно найти записью');
+
+            return $this->redirectToRoute('entries');
+        }
+
+        return $this->render('blog/entry.html.twig', [
+            'blogPost' => $blogPost
         ]);
     }
 }

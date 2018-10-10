@@ -19,7 +19,9 @@
                     {% set firstParagraph = paragraphs|first ~ '</p>' %}
                     <div class="blog-post">
                         <h2 class="blog-post-title">
-                            {{ blogPost.title }}
+                            <a href="{{ path('entry', {'slug': blogPost.slug}) }}">
+                                {{ blogPost.title }}
+                            </a>
                         </h2>
                         <p class="blog-post-meta">
                             {{ blogPost.getUpdatedAt|date('F j, Y') }} by
@@ -31,6 +33,7 @@
                             {% endif %}
                         </p>
                         {{ firstParagraph|raw }}<br/>
+                        <a href="{{ path('entry', {'slug': blogPost.slug}) }}">Подробнее</a>
                     </div>
                 {% else %}
                     <div class="alert alert-danger" role="alert">
@@ -46,12 +49,12 @@
                     <ul class="pager">
                         <li class="previous {% if previous == false %}disabled{% endif %}">
                             <a href="{% if previous %}{{ path('entries', {'page': page - 1}) }}{% endif %}">
-                                <span aria-hidden="true">&larr;</span> Older
+                                <span aria-hidden="true">&larr;</span> Поздние
                             </a>
                         </li>
                         <li class="next {% if next == false %}disabled{% endif %}">
                             <a href="{% if next %}{{ path('entries', {'page': page + 1}) }}{% endif %}">
-                                Newer <span aria-hidden="true">&rarr;</span>
+                                Последние <span aria-hidden="true">&rarr;</span>
                             </a>
                         </li>
                     </ul>

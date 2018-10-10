@@ -1,0 +1,30 @@
+{% extends "base.html.twig" %}
+
+{% block title %}App:blog:entry{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="blog-header">
+            <h1 class="blog-title">Блог</h1>
+            <p class="lead blog-description">Просто куча текстов.</p>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-8 blog-main">
+                <div class="blog-post">
+                    <h2 class="blog-post-title">{{ blogPost.title }}</h2>
+                    <p class="blog-post-meta">
+                        {{ blogPost.updatedAt|date('F j, Y') }} <a href="{{ path('creator', {'name': blogPost.creator.username|url_encode}) }}">
+                            {{ blogPost.creator.name }}
+                        </a>
+                    </p>
+                    <h3>Краткое описание:</h3>
+                    <p>{{ blogPost.description|raw }}</p>
+
+                    <h3>Основной текст:</h3>
+                    <p>{{ blogPost.bod|raw }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
