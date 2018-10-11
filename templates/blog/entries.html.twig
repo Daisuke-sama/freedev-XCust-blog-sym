@@ -27,9 +27,11 @@
                             {{ blogPost.getUpdatedAt|date('F j, Y') }} by
 
                             {% if blogPost.creator %}
-                                {{ blogPost.creator.name }}
+                                <a href="{{ path('creator', {'name': blogPost.creator.username|url_encode}) }}">
+                                    {{ blogPost.creator.name }}
+                                </a>
                             {% else %}
-                                Unknown Author
+                                Неизвестный человек
                             {% endif %}
                         </p>
                         {{ firstParagraph|raw }}<br/>

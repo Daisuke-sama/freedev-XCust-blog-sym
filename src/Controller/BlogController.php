@@ -90,4 +90,27 @@ class BlogController extends AbstractController
             'blogPost' => $blogPost
         ]);
     }
+
+    /**
+     * @Route("/creator/{name}", name="creator")
+     *
+     * @param $name
+     *
+     * @return RedirectResponse|Response
+     */
+    public function creatorAction($name)
+    {
+        $creator = $this->_creatorRepository->findOneByUsername($name);
+
+        if (!$creator) {
+            $this->addFlash('error', 'Нету такого человека.');
+
+            return $this->redirectToRoute('entries');
+        }
+
+        return $this->render('blog/creator.html.twig', [
+            'creator' => $creator
+        ]);
+    }
+
 }

@@ -52,7 +52,7 @@ class Fixtures extends Fixture
                     'this'
                 )
             )
-            ->setSlug('/my-new-post');
+            ->setSlug('my-new-post');
         $manager->persist($blogPost);
         $manager->flush();
     }

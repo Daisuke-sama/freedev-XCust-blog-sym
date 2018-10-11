@@ -1,0 +1,34 @@
+{% extends "base.html.twig" %}
+
+{% block title %}App:blog:creator{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="blog-header">
+            <h1 class="blog-title">Человек-писатель</h1>
+            <p class="lead blog-description">Описание писателя {{ creator.name }}.</p>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-8 blog-main">
+                <div class="blog-post">
+                    <h2 class="blog-post-title">{{ creator.name|raw }}</h2>
+
+                    <p>Short Biography: {{ creator.biography|raw }}</p>
+                    <ul>
+                        {% if creator.facebook %}
+                            <li>{{ creator.facebook|raw }}</li>
+                        {% endif %}
+                        {% if creator.twitter %}
+                            <li>{{ creator.twitter|raw }}</li>
+                        {% endif %}
+                        {% if creator.instagram %}
+                            <li>{{ creator.instagram|raw }}</li>
+                        {% endif %}
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
